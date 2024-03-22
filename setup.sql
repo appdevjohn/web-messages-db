@@ -6,7 +6,9 @@ CREATE TABLE messages (
     message_id BIGSERIAL PRIMARY KEY NOT NULL,
     convo_id BIGINT,
     content VARCHAR(4096) NOT NULL,
-    type content_type NOT NULL
+    type content_type NOT NULL,
+    sender_name VARCHAR(32),
+    sender_avatar VARCHAR(16)
 );
 
 CREATE TABLE conversations (
