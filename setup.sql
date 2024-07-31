@@ -22,16 +22,29 @@ CREATE OR REPLACE FUNCTION update_timestamp()
 RETURNS TRIGGER AS $$
 BEGIN
     IF NEW.* IS DISTINCT FROM OLD.* THEN
-      NEW.updated_at = NOW(); 
-      RETURN NEW;
-   ELSE
-      RETURN OLD;
-   END IF;
+        NEW.updated_at = NOW(); 
+        RETURN NEW;
+    ELSE
+        RETURN OLD;
+    END IF;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER update_timestamp BEFORE UPDATE ON messages
+CREATE OR REPLACE FUNCTION update_conversation_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE conversations
+    SET updated_at = NOW()
+    WHERE convo_id = NEW.convo_id;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_timestamp_messages BEFORE UPDATE ON messages
 FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
 
-CREATE TRIGGER update_timestamp BEFORE UPDATE ON conversations
+CREATE TRIGGER update_timestamp_conversations BEFORE UPDATE ON conversations
 FOR EACH ROW EXECUTE PROCEDURE update_timestamp();
+
+CREATE TRIGGER update_conversation_timestamp_trigger AFTER INSERT ON messages
+FOR EACH ROW EXECUTE PROCEDURE update_conversation_timestamp();
