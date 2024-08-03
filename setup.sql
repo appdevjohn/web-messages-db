@@ -1,21 +1,24 @@
-CREATE TYPE content_type AS ENUM ('text', 'image');
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE messages (
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    message_id BIGSERIAL PRIMARY KEY NOT NULL,
-    convo_id BIGINT,
-    content VARCHAR(4096) NOT NULL,
-    type content_type NOT NULL,
-    sender_name VARCHAR(32),
-    sender_avatar VARCHAR(16)
-);
+CREATE TYPE content_type AS ENUM ('text', 'image');
 
 CREATE TABLE conversations (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    convo_id BIGSERIAL PRIMARY KEY NOT NULL,
+    convo_id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
     name VARCHAR(128) NOT NULL
+);
+
+CREATE TABLE messages (
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    message_id UUID PRIMARY KEY NOT NULL DEFAULT uuid_generate_v4(),
+    convo_id UUID,
+    content VARCHAR(4096) NOT NULL,
+    type content_type NOT NULL,
+    sender_name VARCHAR(32),
+    sender_avatar VARCHAR(16),
+    FOREIGN KEY (convo_id) REFERENCES conversations (convo_id) ON DELETE CASCADE
 );
 
 CREATE OR REPLACE FUNCTION update_timestamp()
