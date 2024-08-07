@@ -1,8 +1,22 @@
-# Web Messages PostgreSQL Config
+# OneTimeChat - Database Config
 
 The `setup.sql` file contains all of the instructions to set up the PostgreSQL database.
 
-## Setting Up in Docker
+This database is used by a backend service which can be found [here](https://github.com/appdevjohn/web-messages-service).
+
+## Quick Setup for Development
+
+This database can be run in any environment, but for convenience, this repository is a quick way to stand up a database in a container to get started in development.
+
+### Required Environment Variables
+
+| Name              | Description                           | Example     |
+| ----------------- | ------------------------------------- | ----------- |
+| POSTGRES_USER     | The user for the PostgreSQL database. | user        |
+| POSTGRES_PASSWORD | The password for the database user.   | password1   |
+| POSTGRES_DB       | The database name.                    | messages_db |
+
+### Running in a Docker Container
 
 First, build an image with the database properly set up.
 
